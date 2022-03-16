@@ -3,6 +3,7 @@ using DevJobs.API.Models;
 using DevJobs.API.Persistence;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,6 +31,7 @@ namespace DevJobs.API.Controllers
         public IActionResult GetById(int id)
         {
             var jobVancancy = _context.JobVacancies
+                .Include(x=>x.Applications)
                 .SingleOrDefault(x=>x.Id == id);
 
             if (jobVancancy == null)
@@ -44,6 +46,8 @@ namespace DevJobs.API.Controllers
             var jobVacancy = new JobVacancy(model.Title, model.Description, model.Company, model.IsRemote, model.SalaryRange);
 
             _context.JobVacancies.Add(jobVacancy);
+            _context.SaveChanges();
+
             return CreatedAtAction("GetById",new { id = jobVacancy.Id}, jobVacancy);
         }
 
@@ -56,6 +60,7 @@ namespace DevJobs.API.Controllers
                 return NotFound();
 
             jobVacancy.Update(model.Title, model.Description);
+            _context.SaveChanges();
 
             return NoContent();
         }

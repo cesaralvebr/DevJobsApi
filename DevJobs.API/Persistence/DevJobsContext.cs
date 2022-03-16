@@ -1,4 +1,5 @@
 ﻿using DevJobs.API.Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,14 +7,30 @@ using System.Threading.Tasks;
 
 namespace DevJobs.API.Persistence
 {
-    public class DevJobsContext
+    public class DevJobsContext:DbContext
     {
-        public DevJobsContext()
+        public DevJobsContext(DbContextOptions<DevJobsContext> options):base(options)
         {
-            JobVacancies = new List<JobVacancy>();
-            JobApplication = new List<JobApplication>();
+
         }
-        public List<JobVacancy> JobVacancies { get; set; }
-        public List<JobApplication> JobApplication { get; set; }
+        public DbSet<JobVacancy> JobVacancies { get; set; }
+        public DbSet<JobApplication> JobApplication { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            builder.Entity<JobVacancy>(e =>
+            {
+                e.HasKey(jv => jv.Id);
+                e.HasMany(jv => jv.Applications)
+                .WithOne()
+                .HasForeignKey(ja => ja.IdJobVacancy)
+                .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            builder.Entity<JobApplication>(e =>
+            {
+                e.HasKey(jp => jp.Id);
+            });
+        }
     }
 }

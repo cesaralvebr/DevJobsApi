@@ -26,7 +26,10 @@ namespace DevJobs.API.Controllers
                 return NotFound();
 
             var jobApplication = new JobApplication(model.ApplicantEmail, model.ApplicantName, model.IdJobVacancy);
+
             _context.JobApplication.Add(jobApplication);
+            _context.SaveChanges();
+
             return NoContent();
         }
     }
