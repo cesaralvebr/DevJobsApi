@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -27,7 +28,6 @@ namespace DevJobs.API
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             // services.AddDbContext<DevJobsContext>(options => options.UseInMemoryDatabase("DevJobs"));
@@ -47,11 +47,8 @@ namespace DevJobs.API
 
                 c.IncludeXmlComments(xmlPath);
             });
-
-
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -70,6 +67,8 @@ namespace DevJobs.API
             {
                 endpoints.MapControllers();
             });
+            app.UseSerilogRequestLogging();
+
         }
     }
 }

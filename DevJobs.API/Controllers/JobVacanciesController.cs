@@ -5,6 +5,7 @@ using DevJobs.API.Persistence.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,6 +24,11 @@ namespace DevJobs.API.Controllers
             _vacancyRepository = vacancyRepository;
         }
 
+        /// <summary>
+        /// Obter todas as vagas
+        /// </summary>
+        /// <param name="model">Todas as vagas retornadas</param>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult GetAll()
         {
@@ -30,6 +36,11 @@ namespace DevJobs.API.Controllers
             return Ok(jobVancancies);
         }
 
+        /// <summary>
+        /// Obter dados da Vaga
+        /// </summary>
+        /// <param name="model">Dados da vaga retornado</param>
+        /// <returns></returns>
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
@@ -49,12 +60,19 @@ namespace DevJobs.API.Controllers
         [HttpPost()]
         public IActionResult Post(AddJobVacancyInputModel model)
         {
+            Log.Information("Post JobVancacy chamado");
+
             var jobVacancy = new JobVacancy(model.Title, model.Description, model.Company, model.IsRemote, model.SalaryRange);
             _vacancyRepository.Add(jobVacancy);
 
             return CreatedAtAction("GetById",new { id = jobVacancy.Id}, jobVacancy);
         }
 
+        /// <summary>
+        /// Editar dados da vaga
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPut("{id}")]
         public IActionResult Put(int id, UpdateJobVacancyInputModel model)
         {
