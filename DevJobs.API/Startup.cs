@@ -45,7 +45,7 @@ namespace DevJobs.API
                 var xmlFile = "DevJobs.API.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
 
-                c.IncludeXmlComments(xmlPath)
+                c.IncludeXmlComments(xmlPath);
             });
 
 
