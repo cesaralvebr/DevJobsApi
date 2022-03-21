@@ -41,6 +41,11 @@ namespace DevJobs.API.Controllers
             return Ok(jobVancancy);
         }
 
+        /// <summary>
+        /// Cadastrar uma vaga de emprego
+        /// </summary>
+        /// <param name="model">Dados da vaga.</param>
+        /// <returns>Objeto recém-criado</returns>
         [HttpPost()]
         public IActionResult Post(AddJobVacancyInputModel model)
         {

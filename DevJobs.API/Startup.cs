@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -29,7 +30,7 @@ namespace DevJobs.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-           // services.AddDbContext<DevJobsContext>(options => options.UseInMemoryDatabase("DevJobs"));
+            // services.AddDbContext<DevJobsContext>(options => options.UseInMemoryDatabase("DevJobs"));
 
             var connectionString = Configuration.GetConnectionString("DevJobsCs");
             services.AddDbContext<DevJobsContext>(options => options.UseSqlServer(connectionString));
@@ -40,18 +41,24 @@ namespace DevJobs.API
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "DevJobs.API", Version = "v1" });
+
+                var xmlFile = "DevJobs.API.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+
+                c.IncludeXmlComments(xmlPath)
             });
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
-            {
                 app.UseDeveloperExceptionPage();
+
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "DevJobs.API v1"));
-            }
 
             app.UseHttpsRedirection();
 
